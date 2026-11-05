@@ -10,16 +10,15 @@ A local web app for training an [RVC](https://github.com/RVC-Project/Retrieval-b
 
 ## Start
 
-Clone this repository with Git, then run these commands in PowerShell. `setup.ps1` initializes the pinned RVC submodule if necessary. A GitHub ZIP download does not include submodule contents.
+Clone this repository with Git, then double-click `run.bat` in the project folder. It checks the local installation, runs `setup.ps1` on first use, starts the server, and opens the app. Keep the server window open; press Ctrl+C in it to stop the app. If you have no supported NVIDIA GPU, run `run.bat cpu` from Command Prompt. A GitHub ZIP download does not include submodule contents.
 
 ```powershell
 git clone https://github.com/jishnu2406/dnax-ai-audio-studio.git
 Set-Location dnax-ai-audio-studio
-.\setup.ps1
-.\start.ps1
+.\run.bat
 ```
 
-Open <http://127.0.0.1:4317>. `npm start` also runs the server. The UI opens before setup finishes, but training and conversion require the RVC environment and model files. Setup downloads Python 3.12, RVC dependencies, and model weights into this project; the downloads can be several gigabytes.
+Open <http://127.0.0.1:4317> if your browser does not open automatically. `npm start` or `start.ps1` can also run the server after setup. Setup downloads Python 3.12, RVC dependencies, and model weights into this project; the downloads can be several gigabytes.
 
 To use another Python environment, set `RVC_PYTHON` to its Python executable before starting the server. To change the web port, set `PORT`.
 
