@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111111">
+  <title>DNAX.ai Audio Studio</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/studio.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <svg class="icon-sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="i-wave" viewBox="0 0 24 24"><path d="M2 12h2l2-7 4 14 4-14 4 14 2-7h2"/></symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8"/></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V3m0 0-5 5m5-5 5 5M4 16v4h16v-4"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7V5Z"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 2 2 7 7 2-7 2-2 7-2-7-7-2 7-2 2-7Zm7 15 .8 2.2L22 20l-2.2.8L19 23l-.8-2.2L16 20l2.2-.8L19 17Z"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 3h4m-8 4 1 14h10l1-14M10 11v6m4-6v6"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m4 12 5 5L20 6"/></symbol>
+    <symbol id="i-video" viewBox="0 0 24 24"><rect x="3" y="5" width="14" height="14" rx="0"/><path d="m17 9 4-3v12l-4-3"/></symbol>
+    <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h9m4 0h3M4 17h3m4 0h9"/><path d="M13 4h4v6h-4zM7 14h4v6H7z"/></symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 6h7l2 2h9v11H3z"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 15.5A8.5 8.5 0 0 1 8.5 4 8.5 8.5 0 1 0 20 15.5Z"/></symbol>
+  </svg>
+
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="brand" href="#video" aria-label="DNAX.ai Audio Studio home"><span class="brand-mark"><svg><use href="#i-wave"/></svg></span><span>DNAX.ai<small>AUDIO STUDIO</small></span></a>
+      <div class="sidebar-section-label">WORKSPACE</div>
+      <nav aria-label="Studio tools">
+        <a class="nav-link active" href="#video" data-tab="video"><svg aria-hidden="true"><use href="#i-video"/></svg><span>01</span> Video to Audio</a>
+        <a class="nav-link" href="#cloner" data-tab="cloner"><svg aria-hidden="true"><use href="#i-mic"/></svg><span>02</span> Voice Cloner</a>
+        <a class="nav-link" href="#enhancer" data-tab="enhancer"><svg aria-hidden="true"><use href="#i-sliders"/></svg><span>03</span> Audio Enhancer</a>
+        <a class="nav-link" href="#resources" data-tab="resources"><svg aria-hidden="true"><use href="#i-folder"/></svg><span>04</span> Resources</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch to light theme"><svg aria-hidden="true"><use href="#i-sun"/></svg><span>Light theme</span></button>
+        <div class="sidebar-note"><span class="pulse-dot"></span><span>Runs on your computer<br><small>Recordings stay in this workspace</small></span></div>
+        <a href="https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI" target="_blank" rel="noopener noreferrer" class="sidebar-credit">Powered by RVC <span aria-hidden="true">↗</span></a>
+      </div>
+    </aside>
+
+    <main class="main" id="workspace">
+      <div class="topline"><span>DNAX.ai / AUDIO PROCESSOR</span><span id="topStatus" class="top-status">Checking setup…</span></div>
+      <section class="hero" aria-labelledby="heroTitle">
+        <div class="hero-copy"><div class="eyebrow"><span class="eyebrow-line"></span> LOCAL AUDIO WORKFLOW</div><h1 id="heroTitle">Sound, refined.</h1><p>Extract, clone, enhance, and organize audio in one private studio.</p></div>
+        <div class="hero-art" aria-hidden="true"><div class="hero-ring ring-a"></div><div class="hero-ring ring-b"></div><div class="hero-disc"><svg><use href="#i-wave"/></svg></div><div class="art-caption">VOICE PRINT <span>01 / 01</span></div></div>
+      </section>
+
+      <div id="setupBanner" class="setup-banner hidden" role="status"><div class="setup-icon">!</div><div><strong>RVC setup is needed</strong><p id="setupDetails">The conversion engine is not installed yet.</p><code>.\setup.ps1</code><span class="setup-hint">Run this in PowerShell from the app folder. Model downloads are several GB.</span></div></div>
+      <div id="toast" class="toast hidden" role="alert"></div>
+
+      <section id="videoView" class="tab-view" aria-labelledby="videoHeading">
+        <div class="view-heading"><span class="section-kicker">01 / INGEST</span><h2 id="videoHeading">Video to Audio</h2><p>Extract the soundtrack from a video, then use it directly as the Voice Cloner source.</p></div>
+        <div class="panel video-panel">
+          <label class="field-label" for="videoFile">Video file</label>
+          <label class="video-drop" for="videoFile"><input id="videoFile" type="file" accept="video/*,.mp4,.mov,.mkv,.avi,.webm,.m4v"><svg aria-hidden="true"><use href="#i-upload"/></svg><strong id="videoFileName">Choose a video</strong><small>MP4, MOV, MKV, AVI, WebM or M4V · up to 1 GB</small></label>
+          <div class="video-options"><div><label class="field-label" for="videoFormat">Output format</label><select id="videoFormat"><option value="wav">WAV · lossless</option><option value="mp3">MP3</option><option value="aac">AAC</option></select></div><div><label class="field-label" for="videoBitrate">Bitrate</label><select id="videoBitrate" disabled><option value="64">64 kbps</option><option value="128">128 kbps</option><option value="192">192 kbps</option><option value="256" selected>256 kbps</option><option value="320">320 kbps</option></select></div></div>
+          <button id="videoConvertButton" class="button button-primary" type="button" disabled><svg aria-hidden="true"><use href="#i-wave"/></svg> Extract audio</button>
+          <p id="videoStatus" class="subtle-note" role="status">Choose a video to begin.</p>
+          <div id="videoResult" class="video-result hidden"><strong>Audio extracted</strong><audio id="videoAudio" controls preload="metadata"></audio><div class="download-row"><a id="videoDownload" href="#" class="download-link" download>Download audio</a><button id="videoUseSource" type="button" class="button button-outline">Use as Voice Cloner source <svg aria-hidden="true"><use href="#i-arrow"/></svg></button></div></div>
+        </div>
+      </section>
+
+      <div id="clonerView" class="workspace-grid tab-view hidden">
+        <div class="left-column">
+          <section class="panel" aria-labelledby="profileHeading">
+            <div class="panel-head"><span class="step-number">01</span><div><div class="section-kicker">VOICE CLONER</div><h2 id="profileHeading">Your voice profile</h2></div><span class="panel-meta">VOICE IDENTITY</span></div>
+            <p class="panel-intro">Create a profile to keep your recordings and trained model together.</p>
+            <form id="createVoiceForm" class="create-form"><label for="voiceName" class="field-label">Name this voice</label><div class="inline-field"><input id="voiceName" type="text" maxlength="60" placeholder="e.g. My studio voice" autocomplete="off" required><button type="submit" class="button button-primary" id="createVoiceButton">Create <svg><use href="#i-arrow"/></svg></button></div></form>
+            <div class="divider"><span>OR SELECT A PROFILE</span></div>
+            <label for="voiceSelect" class="field-label">Active voice</label><select id="voiceSelect" aria-label="Active voice"><option value="">No voice profiles yet</option></select>
+            <div id="voiceSummary" class="voice-summary empty"><span class="summary-icon"><svg><use href="#i-mic"/></svg></span><span>Create a profile to begin.</span></div>
+          </section>
+
+          <section class="panel" aria-labelledby="recordingsHeading">
+            <div class="panel-head"><span class="step-number">02</span><div><div class="section-kicker">BUILD THE REFERENCE</div><h2 id="recordingsHeading">Voice recordings</h2></div><span id="sampleCount" class="count-badge">0 FILES</span></div>
+            <p class="panel-intro">Use clean recordings of only your voice. Around 10 minutes gives RVC a stronger reference.</p>
+            <label id="sampleDrop" class="dropzone" for="sampleFiles" tabindex="0"><input id="sampleFiles" type="file" accept="audio/*,.wav,.flac,.mp3,.m4a,.ogg,.aac,.aiff,.aif" multiple><span class="drop-icon"><svg><use href="#i-upload"/></svg></span><strong>Drop recordings here or browse</strong><small>WAV, FLAC, MP3, M4A and more · up to 250 MB each</small></label>
+            <ul id="sampleList" class="sample-list" aria-label="Uploaded recordings"><li class="empty-list">Your recordings will appear here.</li></ul>
+          </section>
+
+          <section class="panel train-panel" aria-labelledby="trainHeading">
+            <div class="panel-head"><span class="step-number">03</span><div><div class="section-kicker">MAKE IT YOURS</div><h2 id="trainHeading">Train your voice</h2></div><span id="modelBadge" class="model-badge">NOT TRAINED</span></div>
+            <p class="panel-intro">RVC learns your voice from these recordings. Training takes time and uses your GPU when available.</p>
+            <div class="setting-row"><div><label for="epochs" class="field-label">Training passes</label><small>More passes can improve similarity, but take longer.</small></div><select id="epochs"><option value="20">20 · quick test</option><option value="40" selected>40 · balanced</option><option value="80">80 · detailed</option><option value="120">120 · extended</option></select></div>
+            <div class="setting-row"><div><label for="batch" class="field-label">Batch size</label><small>Try 2 if your GPU runs out of memory.</small></div><select id="batch"><option value="2">2 · low memory</option><option value="4" selected>4 · standard</option><option value="6">6 · faster</option></select></div>
+            <button id="trainButton" type="button" class="button button-primary button-wide" disabled><svg><use href="#i-spark"/></svg> Train voice model <svg class="button-trailing"><use href="#i-arrow"/></svg></button>
+            <p id="trainHint" class="subtle-note">Create a voice profile and add recordings to start.</p>
+          </section>
+        </div>
+
+        <div class="right-column">
+          <section class="panel convert-panel" id="convert" aria-labelledby="convertHeading">
+            <div class="convert-head"><div class="section-kicker">VOICE CLONER / SOURCE</div><h2 id="convertHeading">Clone audio<span class="title-period">.</span></h2><p>Upload a recording or use audio extracted from a video.</p></div>
+            <div class="conversion-flow"><div class="flow-label"><span>01</span> SOURCE RECORDING</div><label id="sourceDrop" class="source-drop" for="sourceFile" tabindex="0"><input id="sourceFile" type="file" accept="audio/*,.wav,.flac,.mp3,.m4a,.ogg,.aac,.aiff,.aif"><span class="source-plus">+</span><span><strong id="sourceTitle">Choose an audio file</strong><small id="sourceSubtitle">A clean spoken or sung vocal works best</small></span><svg><use href="#i-upload"/></svg></label><audio id="sourcePreview" class="audio-player hidden" controls preload="metadata"></audio></div>
+            <div class="conversion-flow"><div class="flow-label"><span>02</span> TARGET VOICE</div><div id="targetVoice" class="target-voice"><div class="target-avatar"><svg><use href="#i-wave"/></svg></div><div><strong>No voice selected</strong><small>Choose and train a profile first</small></div><span class="target-status">—</span></div></div>
+            <div class="conversion-flow"><div class="flow-label"><span>03</span> VOICE PITCH</div><div class="pitch-header"><label for="pitch">Vocal pitch</label><output id="pitchValue" for="pitch">0 semitones</output></div><input id="pitch" type="range" min="-12" max="12" step="1" value="0"><div class="range-labels"><span>LOWER</span><span>ORIGINAL</span><span>HIGHER</span></div><details class="advanced"><summary>Advanced voice settings</summary><div class="advanced-inner"><label for="indexRate">Voice similarity <output id="indexValue" for="indexRate">75%</output></label><input id="indexRate" type="range" min="0" max="100" value="75"><label for="f0Method">Pitch detection</label><select id="f0Method"><option value="rmvpe">RMVPE · recommended</option><option value="pm">Praat · lower memory</option><option value="fcpe">FCPE</option></select></div></details></div>
+            <div class="conversion-flow production-flow"><div class="flow-label"><span>04</span> PRODUCTION FINISH</div><label class="switch-row" for="fxEnabled"><span><strong>Use production effects</strong><small>Optional tone, dynamics and style controls</small></span><input id="fxEnabled" type="checkbox" role="switch"><span class="switch-track" aria-hidden="true"></span></label><div id="fxControls" class="fx-controls hidden"><label for="fxPreset" class="field-label">Dialogue style</label><select id="fxPreset"><option value="natural">Natural · no processing</option><option value="professional">Professional dialogue</option><option value="podcast">Podcast</option><option value="narration">Narration</option><option value="explainer">Explanation / explainer</option><option value="cinematic">Cinematic</option><option value="broadcast">Broadcast voice</option><option value="custom">Custom</option></select><p class="effect-note">Based on Audacity bass/treble tone controls. Adjust any setting to make a custom style.</p><div class="fx-grid"><div class="fx-slider"><label for="fxBass">Bass <output id="fxBassValue">0 dB</output></label><input id="fxBass" type="range" min="-12" max="12" value="0"></div><div class="fx-slider"><label for="fxBody">Low-mid body <output id="fxBodyValue">0 dB</output></label><input id="fxBody" type="range" min="-12" max="12" value="0"></div><div class="fx-slider"><label for="fxPresence">Presence <output id="fxPresenceValue">0 dB</output></label><input id="fxPresence" type="range" min="-12" max="12" value="0"></div><div class="fx-slider"><label for="fxTreble">Treble <output id="fxTrebleValue">0 dB</output></label><input id="fxTreble" type="range" min="-12" max="12" value="0"></div><div class="fx-slider"><label for="fxCompression">Compression <output id="fxCompressionValue">0%</output></label><input id="fxCompression" type="range" min="0" max="100" value="0"></div><div class="fx-slider"><label for="fxReverb">Room / reverb <output id="fxReverbValue">0%</output></label><input id="fxReverb" type="range" min="0" max="50" value="0"></div><div class="fx-slider"><label for="fxOutputGain">Output level <output id="fxOutputGainValue">0 dB</output></label><input id="fxOutputGain" type="range" min="-12" max="12" value="0"></div></div><div class="tune-block"><label class="switch-row compact" for="autoTune"><span><strong>Auto tune / pitch correction</strong><small>Optional note correction, best on clean vocals</small></span><input id="autoTune" type="checkbox" role="switch"><span class="switch-track" aria-hidden="true"></span></label><div id="tuneControls" class="tune-controls hidden"><div><label for="tuneKey" class="field-label">Key</label><select id="tuneKey"><option>C</option><option>C#</option><option>D</option><option>D#</option><option>E</option><option>F</option><option>F#</option><option>G</option><option>G#</option><option>A</option><option>A#</option><option>B</option></select></div><div><label for="tuneScale" class="field-label">Scale</label><select id="tuneScale"><option value="chromatic">Chromatic</option><option value="major">Major</option><option value="minor">Minor</option></select></div><div class="fx-slider tune-strength"><label for="tuneStrength">Correction strength <output id="tuneStrengthValue">60%</output></label><input id="tuneStrength" type="range" min="0" max="100" value="60"></div></div></div></div></div>
+            <div class="conversion-flow preview-flow"><div class="flow-label"><span>05</span> AUDITION THE RESULT <span id="previewLive" class="preview-live hidden">LIVE ADJUST</span></div><p class="preview-intro">Hear a short converted sample before rendering the full file. Tone changes refresh this preview automatically.</p><div class="preview-options"><div><label class="field-label" for="previewStart">Start at</label><div class="number-input"><input id="previewStart" type="number" min="0" max="36000" step="1" value="0"><span>sec</span></div></div><div><label class="field-label" for="previewDuration">Length</label><select id="previewDuration"><option value="5">5 sec</option><option value="8" selected>8 sec</option><option value="10">10 sec</option></select></div></div><button id="previewButton" type="button" class="button button-outline button-wide" disabled><svg><use href="#i-play"/></svg> Build voice preview</button><p id="previewStatus" class="preview-status" role="status">Choose a source recording to hear a preview.</p><audio id="convertedPreview" class="preview-player hidden" controls preload="metadata"></audio></div>
+            <button id="convertButton" class="button button-accent button-wide" type="button" disabled><svg><use href="#i-wave"/></svg> Convert to my voice <svg class="button-trailing"><use href="#i-arrow"/></svg></button>
+            <p id="convertHint" class="subtle-note">Train a voice and choose source audio to convert.</p>
+            <button id="openEnhancer" type="button" class="button button-outline button-wide hidden">Open cloned audio in Audio Enhancer <svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+            <div id="resultPanel" class="result-panel hidden">
+              <div class="result-heading"><span class="result-check"><svg><use href="#i-check"/></svg></span><div><strong>Your converted audio is ready</strong><small>Compare and export in stereo WAV or MP3</small></div></div>
+              <div class="compare-tabs" role="group" aria-label="Listen to version"><button id="listenOriginal" type="button" class="active" aria-pressed="true">Original</button><button id="listenEnhanced" type="button" aria-pressed="false" disabled>Enhanced</button><button id="listenStudio" type="button" aria-pressed="false" disabled>Studio finish</button></div>
+              <canvas id="resultWaveform" class="result-waveform" height="70" aria-label="Audio waveform. Click to seek."></canvas>
+              <audio id="resultAudio" controls preload="metadata"></audio>
+              <div id="originalDownloads" class="download-row"><span id="originalExportStatus" class="enhance-status">Preparing stereo downloads…</span><a id="downloadResult" href="#" class="download-link hidden" download>WAV · 2 channels <svg><use href="#i-arrow"/></svg></a><a id="downloadResultMp3" href="#" class="download-link hidden" download>MP3 · 2 channels <svg><use href="#i-arrow"/></svg></a></div>
+              <div class="enhance-panel">
+                <label class="switch-row compact" for="enhanceEnabled"><span><strong>Enhance speech</strong><small>Optional AI cleanup, separation, and studio leveling</small></span><input id="enhanceEnabled" type="checkbox" role="switch"><span class="switch-track" aria-hidden="true"></span></label>
+                <div id="enhanceControls" class="hidden">
+                  <p class="enhance-note">Runs locally with DeepFilterNet speech cleanup and optional Demucs music separation. Adobe's proprietary Enhance Speech model is available only on <a href="https://podcast.adobe.com/en/enhance" target="_blank" rel="noopener noreferrer">Adobe Podcast</a>.</p>
+                  <div class="fx-slider"><label for="enhanceStrength">Speech cleanup <output id="enhanceStrengthValue">100%</output></label><input id="enhanceStrength" type="range" min="0" max="100" value="100"></div>
+                  <label class="enhance-check"><input id="separateMusic" type="checkbox" checked> Separate music from speech (slower first render)</label>
+                  <button id="enhanceButton" class="button button-outline button-wide" type="button">Enhance converted audio</button>
+                  <p id="enhanceStatus" class="enhance-status" role="status">Start enhancement to create a clean speech track.</p>
+                  <div id="enhancedPanel" class="hidden">
+                    <div class="stem-controls">
+                      <div class="fx-slider"><label for="mixSpeech">Speech <output id="mixSpeechValue">100%</output></label><input id="mixSpeech" type="range" min="0" max="100" value="100"></div>
+                      <div class="fx-slider"><label for="mixMusic">Music <output id="mixMusicValue">10%</output></label><input id="mixMusic" type="range" min="0" max="100" value="10"></div>
+                      <div class="fx-slider"><label for="mixBackground">Background <output id="mixBackgroundValue">10%</output></label><input id="mixBackground" type="range" min="0" max="100" value="10"></div>
+                    </div>
+                    <div class="preview-start"><label for="enhancePreviewStart">Preview from</label><input id="enhancePreviewStart" type="number" value="0" min="0" step="1"><span>seconds · 8 second sample</span></div>
+                    <p id="mixStatus" class="enhance-status" role="status">Move a slider to hear a new eight second mix.</p>
+                    <button id="renderEnhanced" class="button button-accent button-wide" type="button">Render full mix for download</button>
+                    <div class="download-row"><a id="downloadEnhanced" href="#" class="download-link" download>WAV · 2 channels <svg><use href="#i-arrow"/></svg></a><a id="downloadEnhancedMp3" href="#" class="download-link" download>MP3 · 2 channels <svg><use href="#i-arrow"/></svg></a></div>
+                    <div class="stem-downloads"><button id="prepareStems" type="button" class="text-button">Prepare separate speech, music, and background tracks</button><p id="stemStatus" class="enhance-status" role="status"></p><div id="stemLinks" class="hidden"></div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel activity-panel" id="activity" aria-labelledby="activityHeading"><div class="activity-head"><div><div class="section-kicker">PROCESS MONITOR</div><h2 id="activityHeading">Activity</h2></div><span id="activityState" class="activity-state">IDLE</span></div><div id="activityEmpty" class="activity-empty"><div class="mini-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><p>Your training and conversions will show up here.</p></div><div id="jobPanel" class="job-panel hidden"><div class="job-head"><div><strong id="jobTitle">Training voice</strong><span id="jobStage">Starting…</span></div><button id="cancelJob" type="button" class="text-button">Stop job</button></div><pre id="jobLogs" class="job-logs" aria-live="polite"></pre></div></section>
+        </div>
+      </div>
+      <section id="enhancerView" class="tab-view hidden" aria-labelledby="enhancerHeading">
+        <div class="view-heading"><span class="section-kicker">03 / FINISH</span><h2 id="enhancerHeading">Audio Enhancer</h2><p>Use the latest cloned output. Compare, clean, master, and export the final sound.</p></div>
+        <p id="enhancerEmpty" class="empty-view">Convert a source in Voice Cloner to start enhancing it here. <a href="#cloner">Open Voice Cloner</a></p>
+        <div id="enhancerMount"></div>
+        <section id="crispPanel" class="panel crisp-panel" aria-labelledby="crispHeading">
+          <div class="panel-head"><svg aria-hidden="true"><use href="#i-sliders"/></svg><div><div class="section-kicker">OPTIONAL FINAL STAGE</div><h2 id="crispHeading">CrispVoice mastering</h2></div></div>
+          <p class="panel-intro">Apply the CrispVoice podcast or natural EQ, de-essing, compression, and loudness chain to the full cloned or enhanced WAV. This stage does not run its separate generative model.</p>
+          <label for="crispPreset" class="field-label">Mastering style</label><select id="crispPreset"><option value="podcast">Podcast · warm and present</option><option value="natural">Natural · lighter dynamics</option></select>
+          <button id="crispButton" class="button button-primary" type="button" disabled>Apply CrispVoice finish</button>
+          <p id="crispStatus" class="subtle-note" role="status">Create a cloned output first.</p>
+          <div id="crispResult" class="download-row hidden"><a id="crispWav" href="#" class="download-link" download>Download studio WAV</a><a id="crispMp3" href="#" class="download-link" download>Download studio MP3</a></div>
+        </section>
+      </section>
+
+      <section id="resourcesView" class="tab-view hidden" aria-labelledby="resourcesHeading">
+        <div class="view-heading"><span class="section-kicker">04 / LIBRARY</span><h2 id="resourcesHeading">Resources</h2><p>Your reference recordings, extracted soundtracks, and cloned outputs stay in this local workspace.</p></div>
+        <div class="resources-grid">
+          <section class="panel" aria-labelledby="referenceHeading"><div class="panel-head"><svg aria-hidden="true"><use href="#i-mic"/></svg><h3 id="referenceHeading">Reference audio</h3><span id="referenceCount" class="resource-count">0</span></div><p class="resource-note">Saved under data/voices/&lt;profile&gt;/samples</p><div id="referenceResources" class="resource-list"></div></section>
+          <section class="panel" aria-labelledby="extractedHeading"><div class="panel-head"><svg aria-hidden="true"><use href="#i-video"/></svg><h3 id="extractedHeading">Video soundtracks</h3><span id="extractedCount" class="resource-count">0</span></div><p class="resource-note">Saved under data/extracted</p><div id="extractedResources" class="resource-list"></div></section>
+          <section class="panel" aria-labelledby="outputHeading"><div class="panel-head"><svg aria-hidden="true"><use href="#i-wave"/></svg><h3 id="outputHeading">Cloned output</h3><span id="outputCount" class="resource-count">0</span></div><p class="resource-note">Saved under data/outputs</p><div id="outputResources" class="resource-list"></div></section>
+        </div>
+        <div id="activityMount"></div>
+      </section>
+      <footer class="footer"><span>DNAX.ai AUDIO STUDIO</span><span>dnax.ai Audio processor</span></footer>
+    </main>
+  </div>
+</body>
+</html>
