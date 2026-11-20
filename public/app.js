@@ -156,6 +156,7 @@ function renderSetup() {
 function renderVoices() {
   const select = $('#voiceSelect');
   const old = state.selectedId;
+  const saved = localStorage.getItem('dnax-active-voice');
   select.replaceChildren();
   if (!state.voices.length) {
     const option = document.createElement('option');
@@ -170,7 +171,9 @@ function renderVoices() {
       option.textContent = `${voice.name}${voice.trained ? ' · trained' : ''}`;
       select.append(option);
     }
-    state.selectedId = state.voices.some(voice => voice.id === old) ? old : state.voices[0].id;
+    const preferred = [old, saved, [...state.voices].reverse().find(voice => voice.trained)?.id]
+      .find(id => state.voices.some(voice => voice.id === id));
+    state.selectedId = preferred || state.voices[0].id;
     select.value = state.selectedId;
   }
   renderCurrentVoice();
@@ -530,12 +533,13 @@ $('#createVoiceForm').addEventListener('submit', async event => {
     input.value = '';
     await refreshVoices();
     state.selectedId = voice.id;
+    localStorage.setItem('dnax-active-voice', voice.id);
     $('#voiceSelect').value = voice.id;
     renderCurrentVoice();
   } catch (error) { toast(error.message); }
 });
 
-$('#voiceSelect').addEventListener('change', event => { invalidatePreview(); state.selectedId = event.target.value; renderCurrentVoice(); scheduleBasePreview(350); });
+$('#voiceSelect').addEventListener('change', event => { invalidatePreview(); state.selectedId = event.target.value; localStorage.setItem('dnax-active-voice', state.selectedId); renderCurrentVoice(); scheduleBasePreview(350); });
 $('#sampleFiles').addEventListener('change', event => uploadSamples(event.target.files));
 allowDrop($('#sampleDrop'), uploadSamples);
 $('#sourceFile').addEventListener('change', event => chooseSource(event.target.files));
